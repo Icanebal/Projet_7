@@ -79,7 +79,8 @@ namespace Dot.Net.WebApi.Controllers
         [Route("/secure/article-details")]
         public async Task<ActionResult<List<User>>> GetAllUserArticles()
         {
-            return Ok();
+            var users = await _userRepository.FindAll();
+            return (users);
         }
     }
 }
