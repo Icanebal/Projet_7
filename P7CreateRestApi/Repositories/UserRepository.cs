@@ -13,24 +13,25 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public User FindByUserName(string userName)
+        public async Task<User?> FindByUserNameAsync(string userName)
         {
-            return DbContext.Users.Where(user => user.UserName == userName)
-                                  .FirstOrDefault();
+            return await DbContext.Users.FirstOrDefaultAsync(user => user.UserName == userName);
         }
 
-        public async Task<List<User>> FindAll()
+
+        public async Task<List<User>> FindAllUsersAsync()
         {
             return await DbContext.Users.ToListAsync();
         }
 
-        public void Add(User user)
+        public async void AddUserAsync(User user)
         {
         }
 
-        public User FindById(int id)
+        public async Task<User?> FindByIdAsync(int id)
         {
-            return null;
+            var user = await DbContext.Users.FindAsync(id);
+            return user;
         }
     }
 }

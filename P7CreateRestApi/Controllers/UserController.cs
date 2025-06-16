@@ -38,16 +38,16 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest();
             }
            
-           _userRepository.Add(user);
+           _userRepository.AddUserAsync(user);
 
             return Ok();
         }
 
         [HttpGet]
         [Route("update/{id}")]
-        public IActionResult ShowUpdateForm(int id)
+        public async Task<IActionResult> ShowUpdateForm(int id)
         {
-            User user = _userRepository.FindById(id);
+            User? user = await _userRepository.FindByIdAsync(id);
             
             if (user == null)
                 throw new ArgumentException("Invalid user Id:" + id);
@@ -65,12 +65,14 @@ namespace Dot.Net.WebApi.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            User user = _userRepository.FindById(id);
+            User? user = await _userRepository.FindByIdAsync(id);
             
             if (user == null)
                 throw new ArgumentException("Invalid user Id:" + id);
+
+            // TODO : Ajouter : await _userRepository.DeleteUserAsync(id);
 
             return Ok();
         }
@@ -79,7 +81,7 @@ namespace Dot.Net.WebApi.Controllers
         [Route("/secure/article-details")]
         public async Task<ActionResult<List<User>>> GetAllUserArticles()
         {
-            var users = await _userRepository.FindAll();
+            var users = await _userRepository.FindAllUsersAsync();
             return (users);
         }
     }
