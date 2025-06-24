@@ -1,7 +1,7 @@
-using Dot.Net.WebApi.Domain;
+using Projet_7.Core.Domain;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Dot.Net.WebApi.Controllers
+namespace Projet_7.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -24,7 +24,7 @@ namespace Dot.Net.WebApi.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Route("validate")]
         public IActionResult Validate([FromBody]Trade trade)
         {
@@ -40,7 +40,7 @@ namespace Dot.Net.WebApi.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("update/{id}")]
         public IActionResult UpdateTrade(int id, [FromBody] Trade trade)
         {

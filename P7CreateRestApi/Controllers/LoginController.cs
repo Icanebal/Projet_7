@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using P7CreateRestApi.Models;
+using Projet_7.Web.Models;
 
-namespace Dot.Net.WebApi.Controllers
+namespace Projet_7.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,8 +1,8 @@
-using Dot.Net.WebApi.Domain;
-using Dot.Net.WebApi.Repositories;
+using Projet_7.Core.Domain;
+using Projet_7.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Dot.Net.WebApi.Controllers
+namespace Projet_7.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]

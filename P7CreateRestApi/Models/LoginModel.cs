@@ -1,4 +1,4 @@
-﻿namespace P7CreateRestApi.Models
+﻿namespace Projet_7.Web.Models
 {
     public class LoginModel
     {
