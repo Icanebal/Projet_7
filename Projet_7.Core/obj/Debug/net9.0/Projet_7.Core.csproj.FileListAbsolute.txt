@@ -10,3 +10,4 @@ C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\Projet_7.Cor
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\refint\Projet_7.Core.dll
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\Projet_7.Core.pdb
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\ref\Projet_7.Core.dll
+C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\Projet_7.Core.csproj.AssemblyReference.cache
