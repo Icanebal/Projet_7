@@ -1,6 +1,7 @@
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\bin\Debug\net9.0\Projet_7.Core.deps.json
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\bin\Debug\net9.0\Projet_7.Core.dll
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\bin\Debug\net9.0\Projet_7.Core.pdb
+C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\Projet_7.Core.csproj.AssemblyReference.cache
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\Projet_7.Core.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\Projet_7.Core.AssemblyInfoInputs.cache
 C:\Users\Jasha\Source\Repos\Projet_7\Projet_7.Core\obj\Debug\net9.0\Projet_7.Core.AssemblyInfo.cs
