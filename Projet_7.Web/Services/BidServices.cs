@@ -34,8 +34,10 @@ namespace Projet_7.Web.Services
 
         public async Task<Result<BidDto>> CreateAsync(BidDto bidDto)
         {
+            if (bidDto.BidQuantity < 0)
+                return Result<BidDto>.Failure("La quantité ne peut pas être négative.");
+
             var bidEntity = _mapper.Map<Bid>(bidDto);
-            bidEntity.CreationDate = DateTime.UtcNow;
             bidEntity.CreationName = "CurrentUser";
 
             var createdEntity = await _bidRepository.CreateAsync(bidEntity);
@@ -52,14 +54,13 @@ namespace Projet_7.Web.Services
             if (existingBid == null)
                 return Result<BidDto>.Failure("L'offre spécifiée n'existe pas.");
 
-            var updatedEntity = _mapper.Map<Bid>(bidDto);
-            updatedEntity.Id = bidId;
-            updatedEntity.RevisionDate = DateTime.UtcNow;
-            updatedEntity.RevisionName = "CurrentUser";
+            _mapper.Map(bidDto, existingBid);
+            existingBid.RevisionDate = DateTime.UtcNow;
+            existingBid.RevisionName = "CurrentUser";
 
-            await _bidRepository.UpdateAsync(updatedEntity);
+            await _bidRepository.UpdateAsync(existingBid);
 
-            var updatedBidDto = _mapper.Map<BidDto>(updatedEntity);
+            var updatedBidDto = _mapper.Map<BidDto>(existingBid);
             return Result<BidDto>.Success(updatedBidDto);
         }
 

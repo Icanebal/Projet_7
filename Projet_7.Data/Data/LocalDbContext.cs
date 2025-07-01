@@ -15,8 +15,10 @@ namespace Projet_7.Data.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-        }
 
-        
+            builder.Entity<Bid>().Property(c => c.CreationDate)
+                .HasDefaultValueSql("GETUTCDATE()")
+                .ValueGeneratedOnAdd();
+        }
     }
 }

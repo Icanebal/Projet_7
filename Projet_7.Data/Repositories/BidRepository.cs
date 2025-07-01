@@ -30,10 +30,8 @@ namespace Projet_7.Data.Repositories
             var newBid = await _databaseContext.SaveChangesAsync();
             return newBid > 0 ? bid : null;
         }
-
         public async Task UpdateAsync(Bid bid)
         {
-            _databaseContext.Entry(bid).State = EntityState.Modified;
             await _databaseContext.SaveChangesAsync();
         }
 

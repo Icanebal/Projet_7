@@ -35,6 +35,9 @@ namespace Projet_7.Web.Controllers
         [HttpPost]
         public async Task<ActionResult<BidDto>> CreateBid([FromBody] BidDto bidDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _bidService.CreateAsync(bidDto);
 
             if (result.IsFailure)
