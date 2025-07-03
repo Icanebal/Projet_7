@@ -7,13 +7,13 @@ using Projet_7.Web.Services;
 
 namespace Projet_7.Tests
 {
-    public class BidServiceTests
+    public class BidServicesTests
     {
         private readonly Mock<IBidRepository> _repoMock = new();
         private readonly Mock<IMapper> _mapperMock = new();
         private readonly BidService _service;
 
-        public BidServiceTests()
+        public BidServicesTests()
         {
             _service = new BidService(_repoMock.Object, _mapperMock.Object);
         }
@@ -33,7 +33,7 @@ namespace Projet_7.Tests
         [Fact]
         public async Task GetByIdAsync_Should_Return_Null_When_Bid_Not_Found()
         {
-            _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Bid)null);
+            _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Bid?)null);
 
             var result = await _service.GetByIdAsync(1);
 
@@ -62,7 +62,7 @@ namespace Projet_7.Tests
             var bid = new Bid { Id = 0 };
 
             _mapperMock.Setup(m => m.Map<Bid>(dto)).Returns(bid);
-            _repoMock.Setup(r => r.CreateAsync(bid)).ReturnsAsync((Bid)null);
+            _repoMock.Setup(r => r.CreateAsync(bid)).ReturnsAsync((Bid?)null);
 
             var result = await _service.CreateAsync(dto);
 
@@ -84,13 +84,13 @@ namespace Projet_7.Tests
             var result = await _service.CreateAsync(dto);
 
             Assert.True(result.IsSuccess);
-            Assert.Equal(1, actual: result.Value.Id);
+            Assert.Equal(1, actual: result.Value!.Id);
         }
 
         [Fact]
         public async Task UpdateAsync_Should_Return_Failure_When_Bid_Not_Found()
         {
-            _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Bid)null);
+            _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Bid?)null);
 
             var result = await _service.UpdateAsync(1, new BidDto());
 
@@ -127,7 +127,7 @@ namespace Projet_7.Tests
             var result = await _service.UpdateAsync(bidId, dto);
 
             Assert.True(result.IsSuccess);
-            Assert.Equal(bidId, result.Value.Id);
+            Assert.Equal(bidId, result.Value!.Id);
             Assert.Equal("Updated", result.Value.Account);
             Assert.Equal("New", result.Value.BidType);
             Assert.Equal(42, result.Value.BidQuantity);
@@ -150,7 +150,7 @@ namespace Projet_7.Tests
         public async Task DeleteAsync_Should_Return_False_When_Bid_NotFound()
         {
             _repoMock.Setup(r => r.GetByIdAsync(It.IsAny<int>()))
-                     .ReturnsAsync((Bid)null);
+                     .ReturnsAsync((Bid?)null);
 
             var result = await _service.DeleteAsync(999);
 

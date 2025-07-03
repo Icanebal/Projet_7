@@ -3,8 +3,8 @@ namespace Projet_7.Core.Domain
     public class Bid
     {
         public int Id { get; set; }
-        public string? Account { get; set; }
-        public string? BidType { get; set; }
+        public string Account { get; set; }
+        public string BidType { get; set; }
         public double? BidQuantity { get; set; }
         public double? AskQuantity { get; set; }
         public double? BidValue { get; set; }

@@ -2,7 +2,7 @@
 using Projet_7.Core.Domain;
 using Projet_7.Core.DTO;
 using Projet_7.Core.Interfaces;
-using Projet_7.Core.Utils;
+using Projet_7.Core.Utilities;
 
 namespace Projet_7.Web.Services
 {
