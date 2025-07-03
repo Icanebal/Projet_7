@@ -113,25 +113,9 @@ namespace Projet_7.Tests
                 .Callback<TradeDto, Trade>((src, dest) =>
                 {
                     dest.Account = src.Account;
-                    dest.AccountType = src.AccountType;
                     dest.BuyQuantity = src.BuyQuantity;
                     dest.SellQuantity = src.SellQuantity;
-                    dest.BuyPrice = src.BuyPrice;
-                    dest.SellPrice = src.SellPrice;
-                    dest.TradeDate = src.TradeDate;
-                    dest.TradeSecurity = src.TradeSecurity;
-                    dest.TradeStatus = src.TradeStatus;
-                    dest.Trader = src.Trader;
-                    dest.Benchmark = src.Benchmark;
-                    dest.Book = src.Book;
-                    dest.CreationName = src.CreationName;
-                    dest.CreationDate = src.CreationDate;
-                    dest.RevisionName = src.RevisionName;
-                    dest.RevisionDate = src.RevisionDate;
-                    dest.DealName = src.DealName;
                     dest.DealType = src.DealType;
-                    dest.SourceListId = src.SourceListId;
-                    dest.Side = src.Side;
                 });
 
             _repoMock.Setup(r => r.UpdateAsync(existing)).Returns(Task.CompletedTask);
@@ -140,7 +124,7 @@ namespace Projet_7.Tests
             var result = await _service.UpdateAsync(tradeId, dto);
 
             Assert.True(result.IsSuccess);
-            Assert.Equal(tradeId, result.Value.Id);
+            Assert.Equal(tradeId, result.Value!.Id);
             Assert.Equal("Updated", result.Value.Account);
         }
 
