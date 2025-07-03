@@ -6,44 +6,44 @@ namespace Projet_7.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RuleNamesController : ControllerBase
+    public class TradesController : ControllerBase
     {
-        private readonly RuleNameService _service;
+        private readonly TradeService _service;
 
-        public RuleNamesController(RuleNameService service)
+        public TradesController(TradeService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRuleNames()
+        public async Task<IActionResult> GetAllTrades()
         {
-            var ruleNames = await _service.GetAllAsync();
-            return Ok(ruleNames);
+            var trades = await _service.GetAllAsync();
+            return Ok(trades);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRuleNameById(int id)
+        public async Task<IActionResult> GetTradeById(int id)
         {
-            var ruleName = await _service.GetByIdAsync(id);
-            if (ruleName == null)
+            var trade = await _service.GetByIdAsync(id);
+            if (trade == null)
                 return NotFound();
-            return Ok(ruleName);
+            return Ok(trade);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRuleName([FromBody] RuleNameDto dto)
+        public async Task<IActionResult> CreateTrade([FromBody] TradeDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _service.CreateAsync(dto);
             if (result.IsFailure)
                 return BadRequest(result.Error);
-            return CreatedAtAction(nameof(GetRuleNameById), new { id = result.Value!.Id }, result.Value);
+            return CreatedAtAction(nameof(GetTradeById), new { id = result.Value!.Id }, result.Value);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateRuleName(int id, [FromBody] RuleNameDto dto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTrade(int id, [FromBody] TradeDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -54,7 +54,7 @@ namespace Projet_7.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRuleName(int id)
+        public async Task<IActionResult> DeleteTrade(int id)
         {
             var deleted = await _service.DeleteAsync(id);
             if (!deleted)
