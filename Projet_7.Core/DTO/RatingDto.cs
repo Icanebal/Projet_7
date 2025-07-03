@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Projet_7.Core.DTO
 {
     public class RatingDto
