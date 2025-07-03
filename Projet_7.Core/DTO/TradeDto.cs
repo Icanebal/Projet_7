@@ -1,9 +1,14 @@
-namespace Projet_7.Core.Domain
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Projet_7.Core.DTO
 {
-    public class Trade
+    public class TradeDto
     {
         public int Id { get; set; }
+
+        [Required(ErrorMessage = "Le compte est obligatoire.")]
         public string Account { get; set; }
+
         public string? AccountType { get; set; }
         public double? BuyQuantity { get; set; }
         public double? SellQuantity { get; set; }
@@ -24,5 +29,4 @@ namespace Projet_7.Core.Domain
         public string? SourceListId { get; set; }
         public string? Side { get; set; }
     }
-
 }
