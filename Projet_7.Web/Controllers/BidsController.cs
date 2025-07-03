@@ -49,6 +49,8 @@ namespace Projet_7.Web.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBid(int id, BidDto bidDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await _bidService.UpdateAsync(id, bidDto);
             if (result.IsFailure)
                 return NotFound();

@@ -48,6 +48,8 @@ namespace Projet_7.Web.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCurvePoint(int id, CurvePointDto curvePointDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await _curvePointService.UpdateAsync(id, curvePointDto);
             if (result.IsFailure)
                 return NotFound();
