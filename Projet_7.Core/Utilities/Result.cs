@@ -1,4 +1,4 @@
-﻿namespace Projet_7.Core.Utils
+﻿namespace Projet_7.Core.Utilities
 {
     public class Result
     {
