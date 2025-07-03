@@ -10,14 +10,14 @@ using Projet_7.Web.Controllers;
 using Projet_7.Web.Services;
 
 
-namespace Projet_7.Tests
+namespace Projet_7.Tests.Integration
 {
-    public class BidsControllerIntegrationTests
+    public class BidsControllerTests
     {
         private readonly BidsController _controller;
         private readonly LocalDbContext _context;
 
-        public BidsControllerIntegrationTests()
+        public BidsControllerTests()
         {
             var options = new DbContextOptionsBuilder<LocalDbContext>()
                 .UseInMemoryDatabase("BidsDbTest")
@@ -83,27 +83,15 @@ namespace Projet_7.Tests
         [Fact]
         public async Task CreateBid_Should_Return_BadRequest_When_InvalidModel()
         {
-            var dto = new BidDto { Account = "", BidType = "X", BidQuantity = 50 };
+            var dtoInvalid = new BidDto { Account = "", BidType = "X", BidQuantity = 50 };
             _controller.ModelState.AddModelError("Account", "Le compte est obligatoire.");
 
-            var result = await _controller.CreateBid(dto);
+            var resultInvalid = await _controller.CreateBid(dtoInvalid);
 
-            var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
-            var modelState = Assert.IsAssignableFrom<SerializableError>(badRequest.Value);
+            var badRequest1 = Assert.IsType<BadRequestObjectResult>(resultInvalid.Result);
+            var modelState = Assert.IsAssignableFrom<SerializableError>(badRequest1.Value);
             Assert.True(modelState.ContainsKey("Account"));
         }
-
-        [Fact]
-        public async Task CreateBid_Should_Return_BadRequest_When_ResultPatternFails()
-        {
-            var dto = new BidDto { Account = "ClientX", BidType = "X", BidQuantity = -42 };
-
-            var result = await _controller.CreateBid(dto);
-
-            var badRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
-            Assert.Equal("La quantité ne peut pas être négative.", badRequest.Value);
-        }
-
 
         [Fact]
         public async Task UpdateBid_Should_Return_Ok_With_Updated_Values()

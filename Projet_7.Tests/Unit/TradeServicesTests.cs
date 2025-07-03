@@ -1,33 +1,42 @@
-using Moq;
 using AutoMapper;
+using Moq;
 using Projet_7.Core.Domain;
 using Projet_7.Core.DTO;
 using Projet_7.Core.Interfaces;
+using Projet_7.Core.Mappings;
 using Projet_7.Web.Services;
 
-namespace Projet_7.Tests
+namespace Projet_7.Tests.Unit
 {
     public class TradeServicesTests
     {
         private readonly Mock<ITradeRepository> _repoMock = new();
-        private readonly Mock<IMapper> _mapperMock = new();
+        private readonly IMapper _mapper;
         private readonly TradeService _service;
 
         public TradeServicesTests()
         {
-            _service = new TradeService(_repoMock.Object, _mapperMock.Object);
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<TradeProfile>());
+            _mapper = config.CreateMapper();
+            _service = new TradeService(_repoMock.Object, _mapper);
         }
 
         [Fact]
         public async Task GetAllAsync_Should_Return_Mapped_TradeDtos()
         {
-            var trades = new List<Trade> { new Trade(), new Trade() };
+            var trades = new List<Trade>
+            {
+                new Trade { Id = 1, Account = "A" },
+                new Trade { Id = 2, Account = "B" }
+            };
             _repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(trades);
-            _mapperMock.Setup(m => m.Map<IEnumerable<TradeDto>>(trades)).Returns(new List<TradeDto>());
 
             var result = await _service.GetAllAsync();
 
             Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+            Assert.Contains(result, t => t.Account == "A");
+            Assert.Contains(result, t => t.Account == "B");
         }
 
         [Fact]
@@ -43,26 +52,21 @@ namespace Projet_7.Tests
         [Fact]
         public async Task GetByIdAsync_Should_Return_TradeDto_When_Trade_Found()
         {
-            var trade = new Trade { Id = 1 };
-            var dto = new TradeDto { Id = 1 };
-
+            var trade = new Trade { Id = 1, Account = "Test" };
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(trade);
-            _mapperMock.Setup(m => m.Map<TradeDto>(trade)).Returns(dto);
 
             var result = await _service.GetByIdAsync(1);
 
             Assert.NotNull(result);
             Assert.Equal(1, result.Id);
+            Assert.Equal("Test", result.Account);
         }
 
         [Fact]
         public async Task CreateAsync_Should_Return_Failure_When_Repository_Returns_Null()
         {
             var dto = new TradeDto { Account = "Test" };
-            var trade = new Trade { Id = 0 };
-
-            _mapperMock.Setup(m => m.Map<Trade>(dto)).Returns(trade);
-            _repoMock.Setup(r => r.CreateAsync(trade)).ReturnsAsync((Trade?)null);
+            _repoMock.Setup(r => r.CreateAsync(It.IsAny<Trade>())).ReturnsAsync((Trade?)null);
 
             var result = await _service.CreateAsync(dto);
 
@@ -74,17 +78,14 @@ namespace Projet_7.Tests
         public async Task CreateAsync_Should_Return_Success_When_Valid()
         {
             var dto = new TradeDto { Account = "Test" };
-            var trade = new Trade { Id = 1 };
-            var returnedDto = new TradeDto { Id = 1 };
-
-            _mapperMock.Setup(m => m.Map<Trade>(dto)).Returns(trade);
-            _repoMock.Setup(r => r.CreateAsync(trade)).ReturnsAsync(trade);
-            _mapperMock.Setup(m => m.Map<TradeDto>(trade)).Returns(returnedDto);
+            _repoMock.Setup(r => r.CreateAsync(It.Is<Trade>(t => t.Account == "Test")))
+                .ReturnsAsync((Trade t) => { t.Id = 1; return t; });
 
             var result = await _service.CreateAsync(dto);
 
             Assert.True(result.IsSuccess);
-            Assert.Equal(1, result.Value.Id);
+            Assert.Equal(1, result.Value!.Id);
+            Assert.Equal("Test", result.Value.Account);
         }
 
         [Fact]
@@ -103,23 +104,9 @@ namespace Projet_7.Tests
         {
             var tradeId = 1;
             var dto = new TradeDto { Id = tradeId, Account = "Updated" };
-            var existing = new Trade { Id = tradeId };
-            var resultDto = new TradeDto { Id = tradeId, Account = "Updated" };
-
+            var existing = new Trade { Id = tradeId, Account = "Old" };
             _repoMock.Setup(r => r.GetByIdAsync(tradeId)).ReturnsAsync(existing);
-
-            _mapperMock
-                .Setup(m => m.Map(dto, existing))
-                .Callback<TradeDto, Trade>((src, dest) =>
-                {
-                    dest.Account = src.Account;
-                    dest.BuyQuantity = src.BuyQuantity;
-                    dest.SellQuantity = src.SellQuantity;
-                    dest.DealType = src.DealType;
-                });
-
             _repoMock.Setup(r => r.UpdateAsync(existing)).Returns(Task.CompletedTask);
-            _mapperMock.Setup(m => m.Map<TradeDto>(existing)).Returns(resultDto);
 
             var result = await _service.UpdateAsync(tradeId, dto);
 

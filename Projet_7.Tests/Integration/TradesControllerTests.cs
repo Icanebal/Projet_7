@@ -9,14 +9,14 @@ using Projet_7.Data.Repositories;
 using Projet_7.Web.Controllers;
 using Projet_7.Web.Services;
 
-namespace Projet_7.Tests
+namespace Projet_7.Tests.Integration
 {
-    public class TradesControllerIntegrationTests
+    public class TradesControllerTests
     {
         private readonly TradesController _controller;
         private readonly LocalDbContext _context;
 
-        public TradesControllerIntegrationTests()
+        public TradesControllerTests()
         {
             var options = new DbContextOptionsBuilder<LocalDbContext>()
                 .UseInMemoryDatabase("TradesDbTest")
@@ -81,13 +81,13 @@ namespace Projet_7.Tests
         [Fact]
         public async Task CreateTrade_Should_Return_BadRequest_When_InvalidModel()
         {
-            var dto = new TradeDto { Account = null };
+            var dtoInvalid = new TradeDto { Account = "", BuyQuantity = 10, SellQuantity = 10 };
             _controller.ModelState.AddModelError("Account", "Le champ Account est requis.");
 
-            var result = await _controller.CreateTrade(dto);
+            var resultInvalid = await _controller.CreateTrade(dtoInvalid);
 
-            var badRequest = Assert.IsType<BadRequestObjectResult>(result);
-            var modelState = Assert.IsAssignableFrom<SerializableError>(badRequest.Value);
+            var badRequest1 = Assert.IsType<BadRequestObjectResult>(resultInvalid);
+            var modelState = Assert.IsAssignableFrom<SerializableError>(badRequest1.Value);
             Assert.True(modelState.ContainsKey("Account"));
         }
 

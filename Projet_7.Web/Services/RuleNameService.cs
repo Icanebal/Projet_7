@@ -36,7 +36,7 @@ namespace Projet_7.Web.Services
             var entity = _mapper.Map<RuleName>(dto);
             var created = await _ruleNameRepository.CreateAsync(entity);
             if (created == null || created.Id <= 0)
-                return Result<RuleNameDto>.Failure("La création du RuleName n'a pas abouti.");
+                return Result<RuleNameDto>.Failure("La création de la règle n'a pas abouti.");
             return Result<RuleNameDto>.Success(_mapper.Map<RuleNameDto>(created));
         }
 
@@ -44,7 +44,7 @@ namespace Projet_7.Web.Services
         {
             var existing = await _ruleNameRepository.GetByIdAsync(id);
             if (existing == null)
-                return Result<RuleNameDto>.Failure("Le RuleName spécifié n'existe pas.");
+                return Result<RuleNameDto>.Failure("La règle spécifiée n'existe pas.");
             _mapper.Map(dto, existing);
             await _ruleNameRepository.UpdateAsync(existing);
             return Result<RuleNameDto>.Success(_mapper.Map<RuleNameDto>(existing));

@@ -1,33 +1,42 @@
-﻿using Moq;
-using AutoMapper;
+﻿using AutoMapper;
+using Moq;
 using Projet_7.Core.Domain;
 using Projet_7.Core.DTO;
 using Projet_7.Core.Interfaces;
+using Projet_7.Core.Mappings;
 using Projet_7.Web.Services;
 
-namespace Projet_7.Tests
+namespace Projet_7.Tests.Unit
 {
     public class CurvePointServiceTests
     {
         private readonly Mock<ICurvePointRepository> _repoMock = new();
-        private readonly Mock<IMapper> _mapperMock = new();
+        private readonly IMapper _mapper;
         private readonly CurvePointService _service;
 
         public CurvePointServiceTests()
         {
-            _service = new CurvePointService(_repoMock.Object, _mapperMock.Object);
+            var config = new MapperConfiguration(cfg => cfg.AddProfile<CurvePointProfile>());
+            _mapper = config.CreateMapper();
+            _service = new CurvePointService(_repoMock.Object, _mapper);
         }
 
         [Fact]
         public async Task GetAllAsync_Should_Return_Mapped_Dtos()
         {
-            var data = new List<CurvePoint> { new CurvePoint(), new CurvePoint() };
+            var data = new List<CurvePoint>
+            {
+                new CurvePoint { Id = 1, CurveId = 1, Term = 2.0, CurvePointValue = 1.5 },
+                new CurvePoint { Id = 2, CurveId = 2, Term = 3.0, CurvePointValue = 2.5 }
+            };
             _repoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(data);
-            _mapperMock.Setup(m => m.Map<IEnumerable<CurvePointDto>>(data)).Returns(new List<CurvePointDto>());
 
             var result = await _service.GetAllAsync();
 
             Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+            Assert.Contains(result, c => c.CurveId == 1 && c.Term == 2.0);
+            Assert.Contains(result, c => c.CurveId == 2 && c.Term == 3.0);
         }
 
         [Fact]
@@ -43,26 +52,23 @@ namespace Projet_7.Tests
         [Fact]
         public async Task GetByIdAsync_Should_Return_Dto_When_Found()
         {
-            var entity = new CurvePoint { Id = 1 };
-            var dto = new CurvePointDto { Id = 1 };
-
+            var entity = new CurvePoint { Id = 1, CurveId = 2, Term = 3.5, CurvePointValue = 1.1 };
             _repoMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(entity);
-            _mapperMock.Setup(m => m.Map<CurvePointDto>(entity)).Returns(dto);
 
             var result = await _service.GetByIdAsync(1);
 
             Assert.NotNull(result);
             Assert.Equal(1, result.Id);
+            Assert.Equal((byte)2, result.CurveId);
+            Assert.Equal(3.5, result.Term);
+            Assert.Equal(1.1, result.CurvePointValue);
         }
 
         [Fact]
         public async Task CreateAsync_Should_Return_Failure_When_Repo_Returns_Null()
         {
             var dto = new CurvePointDto { CurveId = 1, Term = 5, CurvePointValue = 0.5 };
-            var entity = new CurvePoint();
-
-            _mapperMock.Setup(m => m.Map<CurvePoint>(dto)).Returns(entity);
-            _repoMock.Setup(r => r.CreateAsync(entity)).ReturnsAsync((CurvePoint?)null);
+            _repoMock.Setup(r => r.CreateAsync(It.IsAny<CurvePoint>())).ReturnsAsync((CurvePoint?)null);
 
             var result = await _service.CreateAsync(dto);
 
@@ -74,17 +80,16 @@ namespace Projet_7.Tests
         public async Task CreateAsync_Should_Return_Success_When_Valid()
         {
             var dto = new CurvePointDto { CurveId = 1, Term = 5, CurvePointValue = 0.5 };
-            var entity = new CurvePoint { Id = 1 };
-            var returnedDto = new CurvePointDto { Id = 1 };
-
-            _mapperMock.Setup(m => m.Map<CurvePoint>(dto)).Returns(entity);
-            _repoMock.Setup(r => r.CreateAsync(entity)).ReturnsAsync(entity);
-            _mapperMock.Setup(m => m.Map<CurvePointDto>(entity)).Returns(returnedDto);
+            _repoMock.Setup(r => r.CreateAsync(It.Is<CurvePoint>(c => c.CurveId == 1 && c.Term == 5 && c.CurvePointValue == 0.5)))
+                .ReturnsAsync((CurvePoint c) => { c.Id = 1; return c; });
 
             var result = await _service.CreateAsync(dto);
 
             Assert.True(result.IsSuccess);
             Assert.Equal(1, result.Value!.Id);
+            Assert.Equal((byte)1, result.Value.CurveId);
+            Assert.Equal(5, result.Value.Term);
+            Assert.Equal(0.5, result.Value.CurvePointValue);
         }
 
         [Fact]
@@ -103,28 +108,17 @@ namespace Projet_7.Tests
         {
             var id = 1;
             var dto = new CurvePointDto { Id = id, CurveId = 2, Term = 3.0, CurvePointValue = 1.25 };
-            var existing = new CurvePoint { Id = id };
-            var updatedDto = new CurvePointDto { Id = id, CurveId = 2, Term = 3.0, CurvePointValue = 1.25 };
-
+            var existing = new CurvePoint { Id = id, CurveId = 1, Term = 1.0, CurvePointValue = 0.5 };
             _repoMock.Setup(r => r.GetByIdAsync(id)).ReturnsAsync(existing);
-
-            _mapperMock
-                .Setup(m => m.Map(dto, existing))
-                .Callback<CurvePointDto, CurvePoint>((src, dest) =>
-                {
-                    dest.CurveId = src.CurveId;
-                    dest.Term = src.Term;
-                    dest.CurvePointValue = src.CurvePointValue;
-                });
-
             _repoMock.Setup(r => r.UpdateAsync(existing)).Returns(Task.CompletedTask);
-            _mapperMock.Setup(m => m.Map<CurvePointDto>(existing)).Returns(updatedDto);
 
             var result = await _service.UpdateAsync(id, dto);
 
             Assert.True(result.IsSuccess);
             Assert.Equal(id, result.Value!.Id);
             Assert.Equal((byte)2, result.Value.CurveId);
+            Assert.Equal(3.0, result.Value.Term);
+            Assert.Equal(1.25, result.Value.CurvePointValue);
         }
 
         [Fact]

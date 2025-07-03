@@ -11,6 +11,8 @@ namespace Projet_7.Core.DTO
 
         [Required(ErrorMessage = "Le type de l'offre est obligatoire.")]
         public string BidType { get; set; }
+
+        [Range(0, double.MaxValue, ErrorMessage = "La quantité d'offre ne peut pas être négative.")]
         public double? BidQuantity { get; set; }
     }
 }
