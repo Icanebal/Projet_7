@@ -34,20 +34,22 @@ namespace Projet_7.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRating([FromBody] RatingDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
             var result = await _ratingService.CreateAsync(dto);
             if (result.IsFailure)
                 return BadRequest(result.Error);
             return CreatedAtAction(nameof(GetRatingById), new { id = result.Value!.Id }, result.Value);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateRating(int id, [FromBody] RatingDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var result = await _ratingService.UpdateAsync(id, dto);
             if (result.IsFailure)
-                return NotFound(result.Error);
+                return NotFound();
             return Ok(result.Value);
         }
 
