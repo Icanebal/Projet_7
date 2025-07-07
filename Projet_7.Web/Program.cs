@@ -1,24 +1,33 @@
 using Projet_7.Data.Data;
 using Microsoft.EntityFrameworkCore;
+using Projet_7.Core.Interfaces;
+using Projet_7.Data.Repositories;
+using Projet_7.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-
 builder.Services.AddDbContext<LocalDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IBidRepository, BidRepository>();
+builder.Services.AddScoped<BidService>();
+builder.Services.AddScoped<ITradeRepository, TradeRepository>();
+builder.Services.AddScoped<TradeService>();
+builder.Services.AddScoped<ICurvePointRepository, CurvePointRepository>();
+builder.Services.AddScoped<CurvePointService>();
+builder.Services.AddScoped<IRuleNameRepository, RuleNameRepository>();
+builder.Services.AddScoped<RuleNameService>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<RatingService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
