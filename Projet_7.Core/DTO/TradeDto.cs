@@ -9,24 +9,14 @@ namespace Projet_7.Core.DTO
         [Required(ErrorMessage = "Le compte est obligatoire.")]
         public string Account { get; set; }
 
-        public string? AccountType { get; set; }
+        [Required(ErrorMessage = "Le type de transaction est obligatoire.")]
+        public string DealType { get; set; }
+
+        [Range(0, double.MaxValue, ErrorMessage = "La quantité d'offre ne peut pas être négative.")]
         public double? BuyQuantity { get; set; }
+
+        [Range(0, double.MaxValue, ErrorMessage = "La quantité d'offre ne peut pas être négative.")]
         public double? SellQuantity { get; set; }
-        public double? BuyPrice { get; set; }
-        public double? SellPrice { get; set; }
-        public DateTime? TradeDate { get; set; }
-        public string? TradeSecurity { get; set; }
-        public string? TradeStatus { get; set; }
-        public string? Trader { get; set; }
-        public string? Benchmark { get; set; }
-        public string? Book { get; set; }
-        public string? CreationName { get; set; }
-        public DateTime? CreationDate { get; set; }
-        public string? RevisionName { get; set; }
-        public DateTime? RevisionDate { get; set; }
-        public string? DealName { get; set; }
-        public string? DealType { get; set; }
-        public string? SourceListId { get; set; }
-        public string? Side { get; set; }
     }
+
 }

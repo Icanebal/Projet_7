@@ -9,14 +9,14 @@ using Projet_7.Data.Repositories;
 using Projet_7.Web.Controllers;
 using Projet_7.Web.Services;
 
-namespace Projet_7.Tests
+namespace Projet_7.Tests.Integration
 {
-    public class CurvePointsControllerIntegrationTests
+    public class CurvePointsControllerTests
     {
         private readonly CurvePointsController _controller;
         private readonly LocalDbContext _context;
 
-        public CurvePointsControllerIntegrationTests()
+        public CurvePointsControllerTests()
         {
             var options = new DbContextOptionsBuilder<LocalDbContext>()
                 .UseInMemoryDatabase("CurvePointsDbTest")

@@ -19,6 +19,10 @@ namespace Projet_7.Data.Data
             builder.Entity<Bid>().Property(c => c.CreationDate)
                 .HasDefaultValueSql("GETUTCDATE()")
                 .ValueGeneratedOnAdd();
+
+            builder.Entity<Trade>().Property(c => c.CreationDate)
+                .HasDefaultValueSql("GETUTCDATE()")
+                .ValueGeneratedOnAdd();
         }
     }
 }

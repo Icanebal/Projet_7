@@ -34,9 +34,6 @@ namespace Projet_7.Web.Services
 
         public async Task<Result<BidDto>> CreateAsync(BidDto bidDto)
         {
-            if (bidDto.BidQuantity < 0)
-                return Result<BidDto>.Failure("La quantité ne peut pas être négative.");
-
             var bidEntity = _mapper.Map<Bid>(bidDto);
             bidEntity.CreationName = "CurrentUser";
 
