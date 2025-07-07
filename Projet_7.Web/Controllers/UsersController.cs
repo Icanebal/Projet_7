@@ -49,7 +49,7 @@ namespace Projet_7.Web.Controllers
                 return BadRequest(ModelState);
             var result = await _service.UpdateAsync(id, dto);
             if (result.IsFailure)
-                return NotFound(result.Error);
+                return NotFound();
             return Ok(result.Value);
         }
 
